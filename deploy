@@ -1,0 +1,14 @@
+#!/bin/sh
+
+rsync -rav --delete \
+	--exclude '.*' \
+	--exclude node_modules \
+	. 'eurolines-de:~/eurolines-de-rest/'
+
+ssh eurolines-de "\
+cd ~/eurolines-de-rest
+npm i
+npm update
+export NODE_ENV=production
+forever stop eurolines-de-rest
+forever start -a --uid eurolines-de-rest index.js"
